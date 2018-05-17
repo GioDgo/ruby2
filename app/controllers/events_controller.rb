@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy,:register]
 
   # GET /events
   # GET /events.json
@@ -60,6 +60,22 @@ class EventsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  def register
+    @users_of_events = @event.users
+  end
+  def register_user 
+    @event = Event.find(params[:id])
+    email = params[:email]
+    user = User.where(email: email).take
+    unless user.nil?
+      @event.users << user
+    else
+      
+    end
+    
+    redirect_to register_to_event_path(@event)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
