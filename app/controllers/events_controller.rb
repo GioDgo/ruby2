@@ -67,13 +67,12 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     email = params[:email]
     user = User.where(email: email).take
-    unless user.nil?
+    if user.nil? || @event.users.include?(user)
+      redirect_to register_to_event_path(@event),notice:'Imposible agregar al usaurio al evento'
+      return 
+      end
       @event.users << user
-    else
-      
-    end
-    
-    redirect_to register_to_event_path(@event)
+    redirect_to register_to_event_path(@event),notice:'Usuario se agrego con exito'
   end
 
 
