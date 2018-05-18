@@ -2,6 +2,7 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy,:register,:register_user]
   before_action :is_event_full?, only: :register_user
   before_action :is_valid_email?, only: :register_user
+  before_action :set_user, only: :register_user
   # GET /events
   # GET /events.json
   def index
@@ -66,21 +67,26 @@ class EventsController < ApplicationController
   end
   def register_user 
     @event = Event.find(params[:id])
-    email = params[:email]
-    user = User.where(email: email).take
-    if user.nil? || @event.users.include?(user)
+    if @user.nil? || @event.users.include?(@user)
       redirect_to register_to_event_path(@event),notice:'Imposible agregar al usaurio al evento'
       return 
-      end
-      @event.users << user
+    end
+
+      @event.users << @user
     redirect_to register_to_event_path(@event),notice:'Usuario se agrego con exito'
   end
 
 
   private
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_event
       @event = Event.find(params[:id])
+    end
+    def set_user
+      email = params[:email]
+      @user = User.where(email: email).take
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
