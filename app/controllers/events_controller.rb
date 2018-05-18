@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy,:register,:register_user]
   before_action :is_event_full?, only: :register_user
-
+  before_action :is_valid_email?, only: :register_user
   # GET /events
   # GET /events.json
   def index
@@ -93,5 +93,13 @@ class EventsController < ApplicationController
       redirect_to register_to_event_path(@event),notice:"El evento #{@event.name} esta lleno"
     end
    end
+
+   def is_valid_email?
+      if params[:email].blank? || params[:email] !~ User::VALID_EMAIL_REGEX
+        redirect_to register_to_event_path(@event), notice: 'Debes especificar un correo electronico'
+
+      end
+   end
+
 
 end
